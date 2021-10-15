@@ -1,12 +1,23 @@
 const dotenv = require('dotenv').config()
 const fs = require('fs')
 const polka = require('polka')
+const { diffWords } = require('diff')
 const simpleGit = require('simple-git')
 
 const log = (type, msg) =>
   console.log(
     `[${new Date().toUTCString()}] :: [${type.toUpperCase()}] :: ` + msg
   )
+
+function differ(current, incoming) {
+  const diff = diffWords(current, incoming)
+  let output = '';
+  for (let i = 0; i < diff.length; i++) {
+    if (diff[i].removed) continue;
+    output += diff[i].value
+  }
+  return output;
+}
 
 /*
   0 - protocol
@@ -19,7 +30,7 @@ const parsedRepoUrl = process.env.REPO.split('/')
 const repoName = parsedRepoUrl[4].includes('.git')
   ? parsedRepoUrl[4].substr(0, parsedRepoUrl[4].length - 4)
   : parsedRepoUrl[4]
-const baseDir = process.cwd() + '/' + repoName
+let baseDir = process.cwd() + '/' + repoName
 
 /** @type {import('simple-git').SimpleGit} */
 let git
@@ -37,7 +48,18 @@ let git
     await git.clone(process.env.REPO)
     git = simpleGit(options)
   }
+  if (process.env.STORE_IN_FOLDER !== 'false') {
+    if (!fs.existsSync(process.env.STORE_IN_FOLDER.startsWith("/") ? baseDir + process.env.STORE_IN_FOLDER : baseDir + "/" + process.env.STORE_IN_FOLDER)) {
+      try {
+        fs.mkdirSync(process.env.STORE_IN_FOLDER.startsWith("/") ? baseDir + process.env.STORE_IN_FOLDER : baseDir + "/" + process.env.STORE_IN_FOLDER)
+        baseDir = process.env.STORE_IN_FOLDER.startsWith("/") ? baseDir + process.env.STORE_IN_FOLDER : baseDir + "/" + process.env.STORE_IN_FOLDER
+      } catch(e) {
+        throw e
+      }
+    }
+  }
 })()
+
 
 /*
 do some basic sorting here like if its a note, spotify
@@ -53,15 +75,10 @@ async function webhookLogic(req, res) {
       log('song', 'New Song has been received')
       // spotify or apple musik link, append to songs file
       try {
-        fs.appendFileSync(
-          baseDir +
-            `/${
-              process.env.SONGS_FILENAME.includes('.md')
-                ? process.env.SONGS_FILENAME
-                : process.env.SONGS_FILENAME + '.md'
-            }`,
-          '\n -' + inputs.data
-        )
+        const fileName = process.env.SONGS_FILENAME.includes('.md') ? process.env.SONGS_FILENAME : process.env.SONGS_FILENAME + '.md'
+        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const newContent = differ(oldContent, inputs.data)
+        fs.appendFileSync(baseDir + `/${fileName}`, '\n - ' + newContent)
       } catch (e) {
         console.log(e)
         res.end('An error occured while writing the file')
@@ -73,17 +90,13 @@ async function webhookLogic(req, res) {
       1 - Map item ~> can be ignored
       2 - Link to Map Item
       */
-      const splitData = inputs.data.split('\n')
       try {
-        fs.appendFileSync(
-          baseDir +
-            `/${
-              process.env.MAPITEMS_FILENAME.includes('.md')
-                ? process.env.MAPITEMS_FILENAME
-                : process.env.MAPITEMS_FILENAME + '.md'
-            }`,
-          `\n - [${splitData[0]}](${splitData[2]})`
-        )
+        const splitData = inputs.data.split('\n')
+        const newMapItem = `\n - [${splitData[0]}](${splitData[2]})`
+        const fileName = process.env.MAPITEMS_FILENAME.includes('.md') ? process.env.MAPITEMS_FILENAME : process.env.MAPITEMS_FILENAME + '.md'
+        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const newContent = differ(oldContent, newMapItem)
+        fs.appendFileSync(baseDir + `/${newContent}`, newContent)
       } catch (e) {
         console.log(e)
         res.end('An error occured while writing the file')
@@ -91,15 +104,10 @@ async function webhookLogic(req, res) {
     } else if (inputs.data.includes('[todo]')) {
       log('todo', 'New todo has been received')
       try {
-        fs.appendFileSync(
-          baseDir +
-            `/${
-              process.env.TODO_FILENAME.includes('.md')
-                ? process.env.TODO_FILENAME
-                : process.env.TODO_FILENAME + '.md'
-            }`,
-          '\n -' + inputs.data
-        )
+        const fileName = process.env.TODO_FILENAME.includes('.md') ? process.env.TODO_FILENAME : process.env.TODO_FILENAME + '.md'
+        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const newContent = differ(oldContent, inputs.data)
+        fs.appendFileSync(baseDir + `/${filename}`, '\n - ' + newContent)
       } catch (e) {
         console.log(e)
         res.end('An error occured while writing the file')
@@ -107,15 +115,10 @@ async function webhookLogic(req, res) {
     } else {
       log('upload', 'New Upload has been received')
       try {
-        fs.appendFileSync(
-          baseDir +
-            `/${
-              process.env.UPLOAD_FILENAME.includes('.md')
-                ? process.env.UPLOAD_FILENAME
-                : process.env.UPLOAD_FILENAME + '.md'
-            }`,
-          '\n -' + inputs.data
-        )
+        const fileName = process.env.UPLOAD_FILENAME.includes('.md') ? process.env.UPLOAD_FILENAME : process.env.UPLOAD_FILENAME + '.md'
+        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const newContent = differ(oldContent, inputs.data)
+        fs.appendFileSync(baseDir + `/${fileName}`,'\n - ' + newContent)
       } catch (e) {
         console.log(e)
         res.end('An error occured while writing the file')

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "diff": "^5.0.0",
     "dotenv": "^10.0.0",
     "polka": "^0.5.2",
     "simple-git": "^2.46.0"
