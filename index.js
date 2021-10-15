@@ -45,8 +45,6 @@ link or map item and sort if to different files
 */
 async function webhookLogic(req, res) {
   try {
-    // TODO: uncomment once IOS gets their shit together
-    // if (!req.headers["authorization"] || req.headers["authorization"] !== `Bearer ${process.env.TOKEN}`) return res.end('Unauthorized')
     const { inputs } = req.body
     if (
       inputs.data.includes('spotify.com') ||
@@ -148,8 +146,18 @@ async function json(req, res, next) {
   next()
 }
 
+function auth(req, res, next) {
+  if (process.env.SECURITY_ENABLED !== 'true') return next();
+  if (process.env.HEADERBASED_AUTH === 'true') {
+    if (!req.headers["authorization"] || req.headers["authorization"] !== `Bearer ${process.env.TOKEN}`) return res.end('Unauthorized')
+  } else if (process.env.HEADERBASED_AUTH === 'false') {
+    if (!req.body.token || req.body.token !== process.env.TOKEN) return res.end('Unauthorized')
+  }
+  next()
+}
+
 polka()
-  .use(json)
+  .use(json, auth)
   .post('/', webhookLogic)
   .post('/webhook', webhookLogic)
   .listen(process.env.PORT || 3000, (err) => {

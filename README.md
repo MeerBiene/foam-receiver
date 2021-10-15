@@ -53,6 +53,12 @@ Run the following scripts to generate the required deployment files:
 # docker-compose file if you change this port)
 PORT=3000
 
+# Security enabled (if you want to check for token presence or not)
+SECURITY_ENABLED=true
+
+# If set to false, the token has to be sent in the body
+HEADERBASED_AUTH=true
+
 # Token to use for athentification
 TOKEN=YOUR_TOKEN
 
@@ -75,6 +81,11 @@ TODO_FILENAME=Todos
 # Everything else will be placed in those files
 UPLOAD_FILENAME=Upload
 ```
+
+### IOS Shortcut Setup:
+
+- Copy this [Shortcut](https://www.icloud.com/shortcuts/57d2ed90c40e43a5badcc174ebfaaf1d) and edit the content of the last step, `GetContentsOfURL`. Update the url according to your servers url and enter your token in the `authorization` header. 
+- If you have set the config value `HEADERBASED_AUTH` to false you have to add another field to the body called "token" when you enter the previously generated token.
 
 # Running:
 
