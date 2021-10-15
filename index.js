@@ -76,7 +76,7 @@ async function webhookLogic(req, res) {
       // spotify or apple musik link, append to songs file
       try {
         const fileName = process.env.SONGS_FILENAME.includes('.md') ? process.env.SONGS_FILENAME : process.env.SONGS_FILENAME + '.md'
-        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const oldContent = fs.readFileSync(baseDir + `/${fileName}`).toString()
         const newContent = differ(oldContent, inputs.data)
         fs.appendFileSync(baseDir + `/${fileName}`, '\n - ' + newContent)
       } catch (e) {
@@ -94,9 +94,9 @@ async function webhookLogic(req, res) {
         const splitData = inputs.data.split('\n')
         const newMapItem = `\n - [${splitData[0]}](${splitData[2]})`
         const fileName = process.env.MAPITEMS_FILENAME.includes('.md') ? process.env.MAPITEMS_FILENAME : process.env.MAPITEMS_FILENAME + '.md'
-        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const oldContent = fs.readFileSync(baseDir + `/${fileName}`).toString()
         const newContent = differ(oldContent, newMapItem)
-        fs.appendFileSync(baseDir + `/${newContent}`, newContent)
+        fs.appendFileSync(baseDir + `/${fileName}`, newContent)
       } catch (e) {
         console.log(e)
         res.end('An error occured while writing the file')
@@ -105,9 +105,9 @@ async function webhookLogic(req, res) {
       log('todo', 'New todo has been received')
       try {
         const fileName = process.env.TODO_FILENAME.includes('.md') ? process.env.TODO_FILENAME : process.env.TODO_FILENAME + '.md'
-        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const oldContent = fs.readFileSync(baseDir + `/${fileName}`).toString()
         const newContent = differ(oldContent, inputs.data)
-        fs.appendFileSync(baseDir + `/${filename}`, '\n - ' + newContent)
+        fs.appendFileSync(baseDir + `/${fileName}`, '\n - ' + newContent)
       } catch (e) {
         console.log(e)
         res.end('An error occured while writing the file')
@@ -116,7 +116,7 @@ async function webhookLogic(req, res) {
       log('upload', 'New Upload has been received')
       try {
         const fileName = process.env.UPLOAD_FILENAME.includes('.md') ? process.env.UPLOAD_FILENAME : process.env.UPLOAD_FILENAME + '.md'
-        const oldContent = fs.readFileSync(`./${fileName}`).toString()
+        const oldContent = fs.readFileSync(baseDir + `/${fileName}`).toString()
         const newContent = differ(oldContent, inputs.data)
         fs.appendFileSync(baseDir + `/${fileName}`,'\n - ' + newContent)
       } catch (e) {
