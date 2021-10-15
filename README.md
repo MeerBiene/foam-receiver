@@ -30,17 +30,11 @@ Run the following scripts to generate the required deployment files:
 > Fix the permissions on the ssh config so it works inside the docker container
 
 ```console
-./scripts/01-generate-env-file.sh
+./scripts/01-prepare-deployment.sh
 ```
 
-> Generate the .env file (generates a 16 digit token for you)
+> Generate the .env and docker-compose files for you (generates a 16 digit token)
 
-
-```console
-./scripts/02-generate-dockerfile.sh
-```
-
-> Generate the docker-compose file (replaces your git username and email)
 
 ## Configuration:
 

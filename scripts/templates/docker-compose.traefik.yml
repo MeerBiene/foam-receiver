@@ -12,3 +12,9 @@ services:
       - ./.env/:/app/.env
     ports:
       - '127.0.0.1:3000:3000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.receiver.entrypoints=http"
+      - "traefik.http.routers.receiver.tls=true"
+      - "traefik.http.routers.receiver.tls.certresolver=myresolver"
+      - "traefik.http.routers.receiver.rule=Host(`foam-receiver.example.com`)"
