@@ -1,0 +1,9 @@
+node_modules
+
+raw.md
+Songs.md
+Upload.md
+Map-Items.md
+
+docker-compose.yml
+.env

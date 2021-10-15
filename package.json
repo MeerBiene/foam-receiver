@@ -1,0 +1,21 @@
+{
+  "name": "foam-receiver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "polka": "^0.5.2",
+    "simple-git": "^2.46.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1"
+  }
+}

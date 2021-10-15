@@ -1,0 +1,13 @@
+version: "3"
+services:
+  receiver:
+    build:
+      context: .
+      args:
+        GIT_USER: your_username
+        GIT_EMAIL: your@email.com
+    container_name: foam_receiver
+    volumes:
+      - /home/your_username/.ssh/:/root/.ssh/
+    ports:
+      - '127.0.0.1:3000:3000'
