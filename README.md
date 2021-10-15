@@ -1,6 +1,6 @@
 # Foam-Receiver
 
-This is a simple service that receives webhooks from an IOS Shortcut and saves the received data in markdown files.
+This is a simple addon service for [foam](https://foambubble.github.io/foam/) that receives webhooks from an IOS Shortcut and saves the received data in markdown files.
 
 Incoming data is seperated in 3 categories: Songs, Map-Items and Todos. Everything else is stored in one "catcher" file. Songs are determined by whether the content contains a "spotify.com" or "music.apple.com" link. Todos are determined by checking if the data contains the keyword "[todo].
 
