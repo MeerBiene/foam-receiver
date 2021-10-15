@@ -14,7 +14,6 @@ RUN apk --no-cache add git openssh-client \
     && git config --global user.name "$GIT_USER"
 
 COPY ./index.js /app/
-COPY ./.env /app/
 
 ENTRYPOINT ["node", "/app/index.js"]
 

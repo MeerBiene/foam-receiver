@@ -54,15 +54,20 @@ async function webhookLogic(req, res) {
     ) {
       log('song', 'New Song has been received')
       // spotify or apple musik link, append to songs file
-      fs.appendFileSync(
-        baseDir +
-          `/${
-            process.env.SONGS_FILENAME.includes('.md')
-              ? process.env.SONGS_FILENAME
-              : process.env.SONGS_FILENAME + '.md'
-          }`,
-        '\n -' + inputs.data
-      )
+      try {
+        fs.appendFileSync(
+          baseDir +
+            `/${
+              process.env.SONGS_FILENAME.includes('.md')
+                ? process.env.SONGS_FILENAME
+                : process.env.SONGS_FILENAME + '.md'
+            }`,
+          '\n -' + inputs.data
+        )
+      } catch (e) {
+        console.log(e)
+        res.end('An error occured while writing the file')
+      }
     } else if (inputs.data.includes('Map Item')) {
       log('map item', 'New Map Item has been received')
       /*
@@ -71,37 +76,52 @@ async function webhookLogic(req, res) {
       2 - Link to Map Item
       */
       const splitData = inputs.data.split('\n')
-      fs.appendFileSync(
-        baseDir +
-          `/${
-            process.env.MAPITEMS_FILENAME.includes('.md')
-              ? process.env.MAPITEMS_FILENAME
-              : process.env.MAPITEMS_FILENAME + '.md'
-          }`,
-        `\n - [${splitData[0]}](${splitData[2]})`
-      )
+      try {
+        fs.appendFileSync(
+          baseDir +
+            `/${
+              process.env.MAPITEMS_FILENAME.includes('.md')
+                ? process.env.MAPITEMS_FILENAME
+                : process.env.MAPITEMS_FILENAME + '.md'
+            }`,
+          `\n - [${splitData[0]}](${splitData[2]})`
+        )
+      } catch (e) {
+        console.log(e)
+        res.end('An error occured while writing the file')
+      }
     } else if (inputs.data.includes('[todo]')) {
       log('todo', 'New todo has been received')
-      fs.appendFileSync(
-        baseDir +
-          `/${
-            process.env.TODO_FILENAME.includes('.md')
-              ? process.env.TODO_FILENAME
-              : process.env.TODO_FILENAME + '.md'
-          }`,
-        '\n -' + inputs.data
-      )
+      try {
+        fs.appendFileSync(
+          baseDir +
+            `/${
+              process.env.TODO_FILENAME.includes('.md')
+                ? process.env.TODO_FILENAME
+                : process.env.TODO_FILENAME + '.md'
+            }`,
+          '\n -' + inputs.data
+        )
+      } catch (e) {
+        console.log(e)
+        res.end('An error occured while writing the file')
+      }
     } else {
       log('upload', 'New Upload has been received')
-      fs.appendFileSync(
-        baseDir +
-          `/${
-            process.env.UPLOAD_FILENAME.includes('.md')
-              ? process.env.UPLOAD_FILENAME
-              : process.env.UPLOAD_FILENAME + '.md'
-          }`,
-        '\n -' + inputs.data
-      )
+      try {
+        fs.appendFileSync(
+          baseDir +
+            `/${
+              process.env.UPLOAD_FILENAME.includes('.md')
+                ? process.env.UPLOAD_FILENAME
+                : process.env.UPLOAD_FILENAME + '.md'
+            }`,
+          '\n -' + inputs.data
+        )
+      } catch (e) {
+        console.log(e)
+        res.end('An error occured while writing the file')
+      }
     }
 
     try {
@@ -121,8 +141,8 @@ async function webhookLogic(req, res) {
 
 async function json(req, res, next) {
   const buffers = []
-  for await (const chunk of req) { 
-    buffers.push(chunk) 
+  for await (const chunk of req) {
+    buffers.push(chunk)
   }
   req.body = JSON.parse(Buffer.concat(buffers).toString())
   next()
