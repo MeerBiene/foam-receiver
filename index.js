@@ -138,12 +138,16 @@ async function webhookLogic(req, res) {
 }
 
 async function json(req, res, next) {
-  const buffers = []
-  for await (const chunk of req) {
-    buffers.push(chunk)
+  try {
+    const buffers = []
+    for await (const chunk of req) {
+      buffers.push(chunk)
+    }
+    req.body = JSON.parse(Buffer.concat(buffers).toString())
+    next()
+  } catch(e) {
+    res.status(403).end()
   }
-  req.body = JSON.parse(Buffer.concat(buffers).toString())
-  next()
 }
 
 function auth(req, res, next) {

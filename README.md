@@ -27,7 +27,8 @@ Run the following scripts to generate the required deployment files:
 ./scripts/00-fix-permissions.sh
 ```
 
-> Fix the permissions on the ssh config so it works inside the docker container
+> Fix the permissions on the ssh config so it works inside the docker container.
+> This is only needed if you want to clone repositories via ssh
 
 ```console
 ./scripts/01-prepare-deployment.sh
