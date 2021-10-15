@@ -106,7 +106,7 @@ async function webhookLogic(req, res) {
       try {
         const fileName = process.env.TODO_FILENAME.includes('.md') ? process.env.TODO_FILENAME : process.env.TODO_FILENAME + '.md'
         const oldContent = fs.readFileSync(baseDir + `/${fileName}`).toString()
-        const newContent = differ(oldContent, inputs.data)
+        const newContent = differ(oldContent, '\n - ' + inputs.data)
         fs.appendFileSync(baseDir + `/${fileName}`, '\n - ' + newContent)
       } catch (e) {
         console.log(e)
